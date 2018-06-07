@@ -31,8 +31,13 @@ def cameraApp():
 
     #Find shapes/arrow
     shapesFound = robot.cam.findShapes()
-    for i in range(0, len(shapesFound)):
-        robot.cam.drawShapes(shapesFound[i])
+    for shape in shapesFound :
+        robot.cam.drawShapes(shape)
+        # if shape.type == "Arrow":
+        #     if shape.orientation == "Left":
+        #         robot.serialM.sendData("SA1;")
+        #     elif shape.orientation == "Right":
+        #         robot.serialM.sendData("SD1;")
 
     #Find QRCode
     qrList = robot.cam.decodeQR()
@@ -43,12 +48,18 @@ def cameraApp():
     #Display processed current video frame
     robot.cam.displayFrame()
 
+def tcpRX(data):
+    #Callback function to be call when there is new data from JAVA
+    #Prep data to arduino format
+    robot.serialM.sendData(data)
+
 
 
 #=======================Init the vehicle to start the app================
 robot = Vehicle()
 robot.startSerial(rxFunction)
 robot.startCamera(cameraApp)
+robot.startTCP(tcpRX)
 
 while True:
     rawCmds = raw_input("Enter command to send: ")

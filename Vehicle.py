@@ -1,6 +1,8 @@
 import threading
 from SerialManager import SerialManager
 from CameraManager import CameraManager
+from TCPManager import TCPManager
+
 
 
 
@@ -12,6 +14,7 @@ class Vehicle():
     def __init__(self):
         self.serialM = SerialManager()
         self.cam = CameraManager()
+        self.tcp = TCPManager()
 
 
     #======================Start the video camera app==================================
@@ -35,3 +38,11 @@ class Vehicle():
         #start a serial thread to handle incoming comms
         self.serialRxThread = threading.Thread(target = self.serialM.incomingDataListener, args=(rxCallBack,))
         self.serialRxThread.start()
+
+    #======================Start the TCP reciever==================================
+
+
+    def startTCP(self, tcpCallBack):
+        #start a serial thread to handle incoming comms
+        self.tcpRxThread = threading.Thread(target = self.tcp.incomingDataListener, args=(tcpCallBack,))
+        self.tcpRxThread.start()
